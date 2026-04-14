@@ -1,3 +1,30 @@
 ```mermaid
-  info
+
+flowchart
+subgraph Salesforce["Salesforce (Pay Org)"]
+Admin["Internal Admin"]
+SF_Training["Training Objects"]
+PE["Platform Events"]
+end
+subgraph BreadPay["Bread Pay Platform"]
+KS["Knowledge Service"]
+DB[("PostgreSQL<br/>Training Data")]
+end
+subgraph AWS["AWS"]
+S3[("S3 Object Storage<br/>Training Media")]
+end
+subgraph UPP["Bread AWS Greenfield"]
+UI["UPP"]
+User["Brand/Merchant User"]
+end
+Admin -->|"Create/Edit<br/>Training"| SF_Training
+SF_Training -->|"Publish"| PE
+PE -->|"Pub/Sub API"| KS
+KS -->|"Store Metadata / Events"| DB
+KS -->|"Store Media"| S3
+User -->|"View Training"| UI
+UI <-->|"REST API"| KS
+UI -.->|"Download Media"| S3
+KS -->|"Set Acknowledgement"|SF_Training
+
 ```
